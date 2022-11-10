@@ -91,7 +91,9 @@ export const listen = async (client: Client<boolean>) => {
         }
       } catch (e) {
         botLogger.log(e);
-        await interaction.reply("Error generating image");
+        await interaction.reply(
+          "Theres either an error or ur prompt is not allowed. :KEKW:"
+        );
       }
     } else if (interaction.commandName === COMMAND.SHELL) {
       try {
@@ -122,9 +124,7 @@ export const listen = async (client: Client<boolean>) => {
         }
       } catch (e) {
         botLogger.log(e);
-        await interaction.reply(
-          "Theres either an error or ur prompt is not allowed. KEKW"
-        );
+        await interaction.reply("Error generating shell command");
       }
     } else if (interaction.commandName === COMMAND.ASK) {
       try {
