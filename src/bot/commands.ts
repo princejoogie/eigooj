@@ -75,7 +75,7 @@ export const listen = async (client: Client<boolean>) => {
         interaction.editReply({ content: quote(prompt) });
         interaction.followUp({
           content: url,
-          ephemeral: true,
+          ephemeral: false,
         });
       } catch (e) {
         botLogger.log(e);
@@ -95,7 +95,7 @@ export const listen = async (client: Client<boolean>) => {
         interaction.editReply({ content: quote(prompt) });
         interaction.followUp({
           content: codeBlock(cmd),
-          ephemeral: true,
+          ephemeral: false,
         });
       } catch (e) {
         botLogger.log(e);
@@ -116,7 +116,7 @@ export const listen = async (client: Client<boolean>) => {
         interaction.editReply({ content: quote(prompt) });
         interaction.followUp({
           content: answer,
-          ephemeral: true,
+          ephemeral: false,
         });
       } catch (e) {
         botLogger.log(e);
