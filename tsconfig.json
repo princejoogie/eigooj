@@ -21,6 +21,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "importsNotUsedAsValues": "error",
+    "resolveJsonModule": true,
     "checkJs": true,
     "outDir": "./dist"
   },

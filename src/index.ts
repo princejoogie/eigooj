@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { REST, Routes, Client, GatewayIntentBits } from "discord.js";
 
 import { getVersion } from "./util";
+import { commands, listen } from "./bot/commands";
 
 const PORT = process.env["PORT"] ?? 4000;
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"] ?? "";
@@ -32,36 +33,33 @@ const startServer = async () => {
 };
 
 const startBot = async () => {
-  const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
   const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
   });
 
-  const commands = [
-    {
-      name: "ping",
-      description: "Replies with Pong!",
-    },
-  ];
-
-  await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), {
-    body: commands,
-  });
-
-  client.on("interactionCreate", async (interaction) => {
-    if (!interaction.isChatInputCommand()) return;
-
-    if (interaction.commandName === "ping") {
-      await interaction.reply("Pong!");
-    }
-  });
+  listen(client);
 
   client.login(DISCORD_TOKEN);
 
   console.log("Discord bot started!");
 };
 
+export const registerCommands = async () => {
+  const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
+
+  console.log("Registering slash commands...");
+  await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), {
+    body: commands,
+  });
+  console.log("Successfully registered application commands.");
+};
+
 const main = async () => {
+  if (process.argv[2] === "register") {
+    await registerCommands();
+    return;
+  }
+
   try {
     await Promise.all([startServer(), startBot()]);
   } catch (err) {
