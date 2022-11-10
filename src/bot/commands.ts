@@ -1,4 +1,4 @@
-import type { Client } from "discord.js";
+import { type Client, codeBlock, quote } from "discord.js";
 
 import { img } from "../feat/img";
 import { shell } from "../feat/shell";
@@ -57,6 +57,7 @@ export const listen = async (client: Client<boolean>) => {
       try {
         interaction.reply("Generating image...");
         const url = await img(prompt);
+        interaction.editReply({ content: prompt });
         interaction.followUp({
           content: url,
           ephemeral: true,
@@ -76,8 +77,9 @@ export const listen = async (client: Client<boolean>) => {
       try {
         interaction.reply("Generating shell command...");
         const cmd = await shell(prompt);
+        interaction.editReply({ content: prompt });
         interaction.followUp({
-          content: cmd,
+          content: `${quote(prompt)}\n${codeBlock(cmd)}`,
           ephemeral: true,
         });
       } catch (e) {

@@ -4,7 +4,7 @@ import axios from "axios";
 import { openai } from "../config";
 
 export const img = async (query: string) => {
-  console.log("Generating image from query: ", query);
+  console.log("Generating image from query:", query);
   const response = await openai.createImage({
     prompt: query,
     n: 1,
