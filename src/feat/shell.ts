@@ -12,14 +12,14 @@ export const shell = async (query: string) => {
   });
 
   if (response.data.choices.length <= 0) {
-    console.error("No choices returned");
-    process.exit(1);
+    return "No choices returned";
   }
 
   if (!response.data.choices[0]?.text) {
-    console.error("No text returned");
-    process.exit(1);
+    return "No text returned";
   }
 
-  console.log(response.data.choices[0].text.trim());
+  const text = response.data.choices[0].text.trim();
+  console.log(text);
+  return text;
 };

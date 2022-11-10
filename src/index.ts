@@ -48,6 +48,7 @@ export const registerCommands = async () => {
   const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
 
   console.log("Registering slash commands...");
+  console.log(JSON.stringify(commands, null, 2));
   await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), {
     body: commands,
   });
@@ -57,7 +58,6 @@ export const registerCommands = async () => {
 const main = async () => {
   if (process.argv[2] === "register") {
     await registerCommands();
-    return;
   }
 
   try {
