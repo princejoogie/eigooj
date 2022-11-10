@@ -2,6 +2,7 @@ import { openai } from "../config";
 import { appLogger } from "../lib/logger";
 
 export const shell = async (query: string) => {
+  appLogger.log("shell:", query);
   const response = await openai.createCompletion({
     model: "text-davinci-002",
     prompt: `Convert this text to a shell command:\n\nExample: ${query}\nOutput: `,

@@ -2,6 +2,7 @@ import { openai } from "../config";
 import { appLogger } from "../lib/logger";
 
 export const anyQ = async (query: string) => {
+  appLogger.log("anyQ:", query);
   const response = await openai.createCompletion({
     model: "text-davinci-002",
     prompt: query,

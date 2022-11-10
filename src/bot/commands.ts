@@ -103,7 +103,6 @@ export const listen = async (client: Client<boolean>) => {
       }
     } else if (interaction.commandName === COMMAND.ASK) {
       const prompt = interaction.options.getString("question");
-      botLogger.log(prompt);
 
       if (!prompt) {
         interaction.reply("No prompt given!");

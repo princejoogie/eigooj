@@ -2,8 +2,7 @@ import { openai } from "../config";
 import { appLogger } from "../lib/logger";
 
 export const img = async (query: string) => {
-  appLogger.log("Generating image from query:", query);
-
+  appLogger.log("img:", query);
   const response = await openai.createImage({
     prompt: query,
     n: 1,
@@ -19,7 +18,7 @@ export const img = async (query: string) => {
   }
 
   const url = response.data.data[0].url.trim();
-  appLogger.log("Image url: ", url);
+  appLogger.log(url);
 
   return url;
 };
