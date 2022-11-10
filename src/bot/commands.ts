@@ -2,12 +2,14 @@ import { type Client, codeBlock, quote } from "discord.js";
 
 import { img } from "../feat/img";
 import { shell } from "../feat/shell";
+import { anyQ } from "../feat/any-q";
 import { botLogger } from "../lib/logger";
 
 export enum COMMAND {
   PING = "ping",
   IMAGE = "image",
   SHELL = "shell",
+  ASK = "ask",
 }
 
 export const commands = [
@@ -34,6 +36,18 @@ export const commands = [
       {
         name: "prompt",
         description: "The prompt to generate a shell command from",
+        type: 3,
+        required: true,
+      },
+    ],
+  },
+  {
+    name: COMMAND.ASK,
+    description: "Generates an answer based on prompt given!",
+    options: [
+      {
+        name: "question",
+        description: "The question to generate an answer from",
         type: 3,
         required: true,
       },
@@ -86,6 +100,27 @@ export const listen = async (client: Client<boolean>) => {
       } catch (e) {
         botLogger.log(e);
         interaction.reply("Error generating shell command");
+      }
+    } else if (interaction.commandName === COMMAND.ASK) {
+      const prompt = interaction.options.getString("question");
+      botLogger.log(prompt);
+
+      if (!prompt) {
+        interaction.reply("No prompt given!");
+        return;
+      }
+
+      try {
+        interaction.reply("Thinking...");
+        const answer = await anyQ(prompt);
+        interaction.editReply({ content: quote(prompt) });
+        interaction.followUp({
+          content: answer,
+          ephemeral: true,
+        });
+      } catch (e) {
+        botLogger.log(e);
+        interaction.reply("Cannot think of an answer");
       }
     }
   });
