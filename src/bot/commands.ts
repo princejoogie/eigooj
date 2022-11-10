@@ -57,7 +57,7 @@ export const listen = async (client: Client<boolean>) => {
       try {
         interaction.reply("Generating image...");
         const url = await img(prompt);
-        interaction.editReply({ content: prompt });
+        interaction.editReply({ content: quote(prompt) });
         interaction.followUp({
           content: url,
           ephemeral: true,
@@ -77,9 +77,9 @@ export const listen = async (client: Client<boolean>) => {
       try {
         interaction.reply("Generating shell command...");
         const cmd = await shell(prompt);
-        interaction.editReply({ content: prompt });
+        interaction.editReply({ content: quote(prompt) });
         interaction.followUp({
-          content: `${quote(prompt)}\n${codeBlock(cmd)}`,
+          content: codeBlock(cmd),
           ephemeral: true,
         });
       } catch (e) {
