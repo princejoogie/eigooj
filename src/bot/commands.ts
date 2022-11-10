@@ -4,6 +4,7 @@ import { img } from "../feat/img";
 import { shell } from "../feat/shell";
 import { anyQ } from "../feat/any-q";
 import { botLogger } from "../lib/logger";
+import { getQuery, saveQuery } from "../util";
 
 export enum COMMAND {
   PING = "ping",
@@ -62,64 +63,97 @@ export const listen = async (client: Client<boolean>) => {
     if (interaction.commandName === COMMAND.PING) {
       await interaction.reply("Pong!");
     } else if (interaction.commandName === COMMAND.IMAGE) {
-      const prompt = interaction.options.getString("prompt");
-
-      if (!prompt) {
-        interaction.reply("No prompt given!");
-        return;
-      }
-
       try {
-        interaction.reply("Generating image...");
-        const url = await img(prompt);
-        interaction.editReply({ content: quote(prompt) });
-        interaction.followUp({
-          content: url,
+        const prompt = interaction.options.getString("prompt");
+
+        if (!prompt) {
+          await interaction.reply("No prompt given!");
+          return;
+        }
+
+        await interaction.reply("Generating image...");
+        const cachedResult = await getQuery(prompt, "IMAGE");
+
+        const res = cachedResult ? cachedResult.response : await img(prompt);
+        await interaction.editReply({ content: quote(prompt) });
+        await interaction.followUp({
+          content: res,
           ephemeral: false,
         });
+
+        if (!cachedResult) {
+          await saveQuery({
+            prompt,
+            discordUserId: interaction.user.id,
+            response: res,
+            category: "IMAGE",
+          });
+        }
       } catch (e) {
         botLogger.log(e);
-        interaction.reply("Error generating image");
+        await interaction.reply("Error generating image");
       }
     } else if (interaction.commandName === COMMAND.SHELL) {
-      const prompt = interaction.options.getString("prompt");
-
-      if (!prompt) {
-        interaction.reply("No prompt given!");
-        return;
-      }
-
       try {
-        interaction.reply("Generating shell command...");
-        const cmd = await shell(prompt);
-        interaction.editReply({ content: quote(prompt) });
-        interaction.followUp({
-          content: codeBlock(cmd),
+        const prompt = interaction.options.getString("prompt");
+
+        if (!prompt) {
+          await interaction.reply("No prompt given!");
+          return;
+        }
+
+        await interaction.reply("Generating shell command...");
+        const cachedResult = await getQuery(prompt, "SHELL");
+
+        const res = cachedResult ? cachedResult.response : await shell(prompt);
+        await interaction.editReply({ content: quote(prompt) });
+        await interaction.followUp({
+          content: codeBlock(res),
           ephemeral: false,
         });
+
+        if (!cachedResult) {
+          await saveQuery({
+            prompt,
+            discordUserId: interaction.user.id,
+            response: res,
+            category: "SHELL",
+          });
+        }
       } catch (e) {
         botLogger.log(e);
-        interaction.reply("Error generating shell command");
+        await interaction.reply("Error generating shell command");
       }
     } else if (interaction.commandName === COMMAND.ASK) {
-      const prompt = interaction.options.getString("question");
-
-      if (!prompt) {
-        interaction.reply("No prompt given!");
-        return;
-      }
-
       try {
-        interaction.reply("Thinking...");
-        const answer = await anyQ(prompt);
-        interaction.editReply({ content: quote(prompt) });
-        interaction.followUp({
-          content: answer,
+        const prompt = interaction.options.getString("question");
+
+        if (!prompt) {
+          await interaction.reply("No prompt given!");
+          return;
+        }
+
+        await interaction.reply("Thinking...");
+        const cachedResult = await getQuery(prompt, "ASK");
+
+        const res = cachedResult ? cachedResult.response : await anyQ(prompt);
+        await interaction.editReply({ content: quote(prompt) });
+        await interaction.followUp({
+          content: res,
           ephemeral: false,
         });
+
+        if (!cachedResult) {
+          await saveQuery({
+            prompt,
+            discordUserId: interaction.user.id,
+            response: res,
+            category: "ASK",
+          });
+        }
       } catch (e) {
         botLogger.log(e);
-        interaction.reply("Cannot think of an answer");
+        await interaction.reply("Cannot think of an answer");
       }
     }
   });
