@@ -5,6 +5,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { REST, Routes, Client, GatewayIntentBits } from "discord.js";
 
+import prisma from "./lib/prisma";
 import { getVersion } from "./util";
 import { commands, listen } from "./bot/commands";
 import { botLogger, serverLogger } from "./lib/logger";
@@ -24,6 +25,23 @@ const startServer = async () => {
 
   app.get("/", (_, res) => {
     return res.send(`eigooj bot v${getVersion()}`);
+  });
+
+  app.get("/health", async (_, res) => {
+    try {
+      await prisma.$connect();
+      res.json({
+        message: "eigooj bot running, database connected",
+        version: getVersion(),
+      });
+    } catch (e) {
+      console.log(e);
+      res.json({
+        message: "failed to connect to database",
+        version: getVersion(),
+        error: e,
+      });
+    }
   });
 
   app.listen(PORT, () => {
