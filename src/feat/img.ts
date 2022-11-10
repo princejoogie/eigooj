@@ -24,6 +24,6 @@ export const img = async (query: string) => {
     return url;
   } catch (e) {
     appLogger.error(e);
-    return "Error generating image";
+    return "Theres either an error or ur prompt is not allowed. :KEKW:";
   }
 };
