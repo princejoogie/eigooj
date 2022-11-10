@@ -13,6 +13,7 @@ import { botLogger, serverLogger } from "./lib/logger";
 const PORT = process.env["PORT"] ?? 4000;
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"] ?? "";
 const DISCORD_CLIENT_ID = process.env["DISCORD_CLIENT_ID"] ?? "";
+const DISCORD_PERMISSIONS = 412317305921;
 
 const startServer = async () => {
   const app = express();
@@ -23,8 +24,10 @@ const startServer = async () => {
   app.use(express.static("public"));
   app.use(morgan("combined"));
 
-  app.get("/", (_, res) => {
-    return res.send(`eigooj bot v${getVersion()}`);
+  app.get("/invite", (_, res) => {
+    return res.redirect(
+      `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&scope=bot&permissions=${DISCORD_PERMISSIONS}`
+    );
   });
 
   app.get("/health", async (_, res) => {
