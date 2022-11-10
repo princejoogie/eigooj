@@ -7,6 +7,7 @@ import { REST, Routes, Client, GatewayIntentBits } from "discord.js";
 
 import { getVersion } from "./util";
 import { commands, listen } from "./bot/commands";
+import { botLogger, serverLogger } from "./lib/logger";
 
 const PORT = process.env["PORT"] ?? 4000;
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"] ?? "";
@@ -26,7 +27,7 @@ const startServer = async () => {
   });
 
   app.listen(PORT, () => {
-    console.log(
+    serverLogger.log(
       `Server (v${getVersion()}) listening on http://localhost:${PORT}`
     );
   });
@@ -41,18 +42,18 @@ const startBot = async () => {
 
   client.login(DISCORD_TOKEN);
 
-  console.log("Discord bot started!");
+  botLogger.log(`Bot (v${getVersion()}) started`);
 };
 
 export const registerCommands = async () => {
   const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
 
-  console.log("Registering slash commands...");
-  console.log(JSON.stringify(commands, null, 2));
+  botLogger.log("Registering slash commands...");
+  botLogger.log(JSON.stringify(commands, null, 2));
   await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), {
     body: commands,
   });
-  console.log("Successfully registered application commands.");
+  botLogger.log("Successfully registered application commands.");
 };
 
 const main = async () => {

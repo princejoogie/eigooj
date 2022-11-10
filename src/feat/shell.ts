@@ -1,4 +1,5 @@
 import { openai } from "../config";
+import { appLogger } from "../lib/logger";
 
 export const shell = async (query: string) => {
   const response = await openai.createCompletion({
@@ -20,6 +21,7 @@ export const shell = async (query: string) => {
   }
 
   const text = response.data.choices[0].text.trim();
-  console.log(text);
+  appLogger.log(text);
+
   return text;
 };

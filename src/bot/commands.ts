@@ -2,6 +2,7 @@ import { type Client, codeBlock, quote } from "discord.js";
 
 import { img } from "../feat/img";
 import { shell } from "../feat/shell";
+import { botLogger } from "../lib/logger";
 
 export enum COMMAND {
   PING = "ping",
@@ -63,7 +64,7 @@ export const listen = async (client: Client<boolean>) => {
           ephemeral: true,
         });
       } catch (e) {
-        console.log(e);
+        botLogger.log(e);
         interaction.reply("Error generating image");
       }
     } else if (interaction.commandName === COMMAND.SHELL) {
@@ -83,7 +84,7 @@ export const listen = async (client: Client<boolean>) => {
           ephemeral: true,
         });
       } catch (e) {
-        console.log(e);
+        botLogger.log(e);
         interaction.reply("Error generating shell command");
       }
     }
