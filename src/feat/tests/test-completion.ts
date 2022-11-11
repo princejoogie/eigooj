@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { imgEdit } from "../img";
+import { imgEdit, imgVariation } from "../img";
 import path from "path";
 
 const inputs = {
@@ -29,7 +29,7 @@ const inputs = {
   },
 };
 
-const main = async () => {
+export const edits = async () => {
   const key: keyof typeof inputs = "d";
   const source = path.join(inputs[key].source);
   const mask = path.join(inputs[key].mask);
@@ -39,4 +39,9 @@ const main = async () => {
   console.log(JSON.stringify(urls, null, 2));
 };
 
-main().catch(console.error);
+export const variants = async () => {
+  const urls = await imgVariation(inputs.a.source);
+  console.log(JSON.stringify(urls, null, 2));
+};
+
+variants().catch(console.error);
