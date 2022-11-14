@@ -56,7 +56,20 @@ export const commands = [
   },
 ];
 
-export const listen = async (client: Client<boolean>) => {
+export interface ListenOptions {
+  cacheResponses: boolean;
+}
+
+const defaultListenOptions: ListenOptions = {
+  cacheResponses: true,
+};
+
+export const listen = async (
+  client: Client<boolean>,
+  options?: ListenOptions
+) => {
+  const opts = { ...defaultListenOptions, ...options };
+
   client.on("interactionCreate", async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
@@ -81,7 +94,7 @@ export const listen = async (client: Client<boolean>) => {
           ephemeral: false,
         });
 
-        if (!cachedResult) {
+        if (!cachedResult && opts.cacheResponses) {
           await saveQuery({
             prompt,
             discordUserId: interaction.user.id,
@@ -114,7 +127,7 @@ export const listen = async (client: Client<boolean>) => {
           ephemeral: false,
         });
 
-        if (!cachedResult) {
+        if (!cachedResult && opts.cacheResponses) {
           await saveQuery({
             prompt,
             discordUserId: interaction.user.id,
@@ -145,7 +158,7 @@ export const listen = async (client: Client<boolean>) => {
           ephemeral: false,
         });
 
-        if (!cachedResult) {
+        if (!cachedResult && opts.cacheResponses) {
           await saveQuery({
             prompt,
             discordUserId: interaction.user.id,

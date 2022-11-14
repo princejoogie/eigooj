@@ -59,7 +59,7 @@ const startBot = async () => {
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
   });
 
-  listen(client);
+  listen(client, { cacheResponses: false });
 
   client.login(DISCORD_TOKEN);
 
